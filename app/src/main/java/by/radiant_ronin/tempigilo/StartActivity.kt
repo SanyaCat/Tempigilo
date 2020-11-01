@@ -1,9 +1,6 @@
 package by.radiant_ronin.tempigilo
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +8,16 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.item_player.view.*
 
 class StartActivity : AppCompatActivity() {
+
+    companion object {
+        lateinit var context: StartActivity
+    }
 
     lateinit var rvPlayers: RecyclerView
     lateinit var fabAddPlayer: FloatingActionButton
@@ -29,6 +26,8 @@ class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
+
+        context = this
 
         val player1 = Player(0, MainActivity.startTime, MainActivity.colors[0], "Red")
         val player2 = Player(1, MainActivity.startTime, MainActivity.colors[1], "Blue")
@@ -50,14 +49,22 @@ class StartActivity : AppCompatActivity() {
             removePlayer(it.id)
         }
         fabBegin.setOnClickListener {
+            val chooseTimeDialogFragment = ChooseTimeDialogFragment()
+            val manager = supportFragmentManager
+            chooseTimeDialogFragment.show(manager, "chooseTimeDialog")
 
-            val intentStartGame = Intent(this, MainActivity::class.java)
-            startActivity(intentStartGame)
+
         }
 
         rvPlayers.adapter = adapter
 
         rvPlayers.layoutManager = LinearLayoutManager(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        rvPlayers.invalidate()
     }
 
     override fun onPause() {

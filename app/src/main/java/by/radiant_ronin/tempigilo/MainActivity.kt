@@ -3,11 +3,12 @@ package by.radiant_ronin.tempigilo
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.os.Bundle
-import android.os.CountDownTimer
+import android.media.MediaPlayer
+import android.os.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,25 +16,42 @@ class MainActivity : AppCompatActivity() {
         lateinit var players: ArrayList<Player>
         lateinit var context: Context
         lateinit var reservedColors: MutableSet<Int>
-        val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA)
-        var startTime = 10000L
+        val colors = listOf(
+            Color.RED,
+            Color.BLUE,
+            Color.GREEN,
+            Color.YELLOW,
+            Color.CYAN,
+            Color.MAGENTA
+        )
+        var startTime = 0L
     }
 
-    lateinit var countDownTimer: CountDownTimer
+    var countDownTimer: CountDownTimer? = null
     var isRunning = false
     var currentPlayer = 0
+    var losers = mutableSetOf<Int>()
+    lateinit var mediaPlayer: MediaPlayer
+
+    fun playSound() {
+        mediaPlayer.start()
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= 26) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(500)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         context = this
+        mediaPlayer = MediaPlayer.create(this, R.raw.beep_short)
 
         btn_next_player.setOnClickListener {
-            if (currentPlayer < players.size - 1)
-                currentPlayer++
-            else
-                currentPlayer = 0
+            findNext()
 
             if (isRunning) {
                 pauseTimer()
@@ -59,6 +77,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        losers = mutableSetOf()
+        btn_next_player.isEnabled = true
+        btn_pause.isEnabled = true
         for (i in players)
             i.time = startTime
 
@@ -68,12 +89,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        if (countDownTimer != null)
+            pauseTimer()
+    }
 
-        pauseTimer()
+    private fun findNext() {
+        do
+            if (currentPlayer < players.size - 1)
+                currentPlayer++
+            else
+                currentPlayer = 0
+        while (losers.contains(currentPlayer))
     }
 
     private fun pauseTimer() {
-        countDownTimer.cancel()
+        countDownTimer!!.cancel()
         isRunning = false
         btn_pause.setImageResource(android.R.drawable.ic_media_play)
     }
@@ -87,13 +117,33 @@ class MainActivity : AppCompatActivity() {
 
             @SuppressLint("SetTextI18n")
             override fun onFinish() {
-                // TODO: FINISH
-                Toast.makeText(this@MainActivity, "Player ${players[currentPlayer].name} loses!", Toast.LENGTH_SHORT).show()
-                txtv_time.text = "00:00"
+                if (losers.size + 2 < players.size) {
+                    playSound()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Player ${players[currentPlayer].name} loses!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    losers.add(currentPlayer)
+                    txtv_time.text = "00:00"
+                    currentPlayer--
+                } else {
+                    findNext()
+                    playSound()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Player ${players[currentPlayer].name} wins!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    updateColor()
+                    updateTime()
+                    btn_next_player.isEnabled = false
+                    btn_pause.isEnabled = false
+                }
             }
         }
 
-        countDownTimer.start()
+        countDownTimer!!.start()
         isRunning = true
         btn_pause.setImageResource(android.R.drawable.ic_media_pause)
     }
