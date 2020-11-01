@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/text_margin" >
+
+    <EditText
+        android:id="@+id/edt_player_name"
+        android:layout_width="192dp"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:textSize="24sp"
+        android:maxLength="12"
+        android:hint="@string/name"
+        tools:text="Name"
+        android:inputType="text"
+        android:autofillHints="@string/name" />
+
+    <ImageView
+        android:id="@+id/img_player_color"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        tools:foreground="@color/red"
+        android:contentDescription="@string/color" />
+
+    <ImageButton
+        android:id="@+id/btn_player_remove"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:contentDescription="@string/remove" />
+
+</LinearLayout>

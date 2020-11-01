@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Tempigilo</string>
+    <string name="time_default">30:00</string>
+    <string name="tap">TAP</string>
+    <string name="next_player">Next Player</string>
+    <string name="pause_timer">Pause Timer</string>
+    <string name="name">Name</string>
+    <string name="color">Color</string>
+    <string name="remove">Remove</string>
+</resources>
