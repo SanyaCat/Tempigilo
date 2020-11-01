@@ -1,6 +1,8 @@
 package by.radiant_ronin.tempigilo
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,9 +23,9 @@ class StartActivity : AppCompatActivity() {
         lateinit var context: StartActivity
     }
 
-    lateinit var rvPlayers: RecyclerView
-    lateinit var fabAddPlayer: FloatingActionButton
-    lateinit var fabBegin: FloatingActionButton
+    private lateinit var rvPlayers: RecyclerView
+    private lateinit var fabAddPlayer: FloatingActionButton
+    private lateinit var fabBegin: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,10 +33,10 @@ class StartActivity : AppCompatActivity() {
 
         context = this
 
-        val player1 = Player(0, MainActivity.startTime, MainActivity.colors[0], "Red")
-        val player2 = Player(1, MainActivity.startTime, MainActivity.colors[1], "Blue")
-        val player3 = Player(2, MainActivity.startTime, MainActivity.colors[2], "Green")
-        val player4 = Player(3, MainActivity.startTime, MainActivity.colors[3], "Yellow")
+        val player1 = Player(MainActivity.startTime, MainActivity.colors[0], "Red")
+        val player2 = Player(MainActivity.startTime, MainActivity.colors[1], "Blue")
+        val player3 = Player(MainActivity.startTime, MainActivity.colors[2], "Green")
+        val player4 = Player(MainActivity.startTime, MainActivity.colors[3], "Yellow")
         MainActivity.players = arrayListOf(player1, player2, player3, player4)
         MainActivity.reservedColors = mutableSetOf(MainActivity.colors[0], MainActivity.colors[1],
             MainActivity.colors[2], MainActivity.colors[3])
@@ -41,24 +45,33 @@ class StartActivity : AppCompatActivity() {
         fabAddPlayer = findViewById(R.id.fab_add_player)
         fabBegin = findViewById(R.id.fab_begin)
 
-        val adapter = PlayerListAdapter(MainActivity.players)
         fabAddPlayer.setOnClickListener {
             addPlayer()
-        }
-        adapter.setOnItemClickListener {
-            removePlayer(it.id)
         }
         fabBegin.setOnClickListener {
             val chooseTimeDialogFragment = ChooseTimeDialogFragment()
             val manager = supportFragmentManager
             chooseTimeDialogFragment.show(manager, "chooseTimeDialog")
-
-
         }
 
+        val adapter = PlayerListAdapter(MainActivity.players)
+        adapter.setOnItemClickListener {
+            removePlayer(it)
+        }
         rvPlayers.adapter = adapter
 
-        rvPlayers.layoutManager = LinearLayoutManager(this)
+        val manager = LinearLayoutManager(this)
+        rvPlayers.layoutManager = manager
+
+        rvPlayers.addItemDecoration(DividerItemDecoration(this,
+            manager.orientation))
+
+        val callback = PlayerListAdapter.DragManageAdapter(
+            adapter, ItemTouchHelper.UP.or(ItemTouchHelper.DOWN),
+            ItemTouchHelper.LEFT.or(ItemTouchHelper.RIGHT)
+        )
+        val helper = ItemTouchHelper(callback)
+        helper.attachToRecyclerView(rvPlayers)
     }
 
     override fun onResume() {
@@ -73,13 +86,12 @@ class StartActivity : AppCompatActivity() {
         rvPlayers
     }
 
-    fun addPlayer() {
+    private fun addPlayer() {
         if (MainActivity.players.size == 6) {
             // if Maximum players
             Toast.makeText(this, "Maximum players reached!", Toast.LENGTH_SHORT).show()
             return
         }
-        val position = MainActivity.players.size
 
         var color = 0
         for (i in MainActivity.colors) {
@@ -98,34 +110,30 @@ class StartActivity : AppCompatActivity() {
             MainActivity.colors[5] -> "Magenta"
             else -> "Gray"
         }
+        val position = MainActivity.players.size
         // adding new player
-        val newPlayer = Player(position, MainActivity.startTime, color, name)
+        val newPlayer = Player(MainActivity.startTime, color, name)
         MainActivity.players.add(newPlayer)
         // notifying the adapter
         rvPlayers.adapter!!.notifyItemInserted(position)
     }
 
-    fun removePlayer(position: Int) {
+    private fun removePlayer(player: Player) {
         if (MainActivity.players.size <= 2) {
             Toast.makeText(this, "Minimum players reached!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        MainActivity.reservedColors.remove(MainActivity.players[position].color)
-        MainActivity.players.removeAt(position)
-        resetIds()
+        MainActivity.reservedColors.remove(player.color)
+        val position = MainActivity.players.indexOf(player)
+        // removing selected player
+        MainActivity.players.remove(player)
+        // notifying the adapter
         rvPlayers.adapter!!.notifyItemRemoved(position)
-        rvPlayers.invalidate()
-    }
-
-    fun resetIds() {
-        for (i in 0 until MainActivity.players.size)
-            MainActivity.players[i].id = i
     }
 
     // List Adapter
-    class PlayerListAdapter(private val mPlayers: ArrayList<Player>)
-        : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
+    class PlayerListAdapter(private val mPlayers: ArrayList<Player>) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
 
         private var listener: ((item: Player) -> Unit)? = null
 
@@ -133,17 +141,16 @@ class StartActivity : AppCompatActivity() {
             this.listener = listener
         }
 
-        inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) { // , val cetl: CustomEditTextListener
+        inner class ViewHolder(listItemView: View, val cetl: CustomEditTextListener) : RecyclerView.ViewHolder(listItemView) {
             init {
                 listItemView.btn_player_remove.setOnClickListener {
                     listener?.invoke(mPlayers[adapterPosition])
                 }
-                //
-//                listItemView.edt_player_name.addTextChangedListener(cetl)
+                listItemView.edt_player_name.addTextChangedListener(cetl)
             }
             // views
-            val edtPlayerName = itemView.findViewById<EditText>(R.id.edt_player_name)
-            val imgPlayerColor = itemView.findViewById<ImageView>(R.id.img_player_color)
+            val edtPlayerName = itemView.findViewById<EditText>(R.id.edt_player_name)!!
+            val imgPlayerColor = itemView.findViewById<ImageView>(R.id.img_player_color)!!
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -151,15 +158,15 @@ class StartActivity : AppCompatActivity() {
             val inflater = LayoutInflater.from(context)
             // item player
             val playerView = inflater.inflate(R.layout.item_player, parent, false)
-            return ViewHolder(playerView) //, CustomEditTextListener())
+            return ViewHolder(playerView, CustomEditTextListener())
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val player: Player = mPlayers[position]
             // player name
             val edtPlayerName = holder.edtPlayerName
+            holder.cetl.viewHolder = holder
             edtPlayerName.setText(player.name)
-//            holder.cetl.position = position
             // player color
             val imgPlayerColor = holder.imgPlayerColor
             imgPlayerColor.setBackgroundColor(player.color)
@@ -167,20 +174,54 @@ class StartActivity : AppCompatActivity() {
 
         override fun getItemCount() = mPlayers.size
 
-//        inner class CustomEditTextListener : TextWatcher {
-//            var position: Int = 0
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//                // nope
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                mPlayers[position].name = s.toString()
-//            }
-//
-//            override fun afterTextChanged(s: Editable?) {
-//                // nope
-//            }
-//        }
+        fun swapItems(from: Int, to: Int) {
+            if (from < to)
+                for (i in from until to)
+                    mPlayers[i] = mPlayers.set(i+1, mPlayers[i])
+            else
+                for (i in from..to + 1)
+                    mPlayers[i] = mPlayers.set(i-1, mPlayers[i])
+
+            notifyItemMoved(from, to)
+        }
+
+        class DragManageAdapter(adapter: PlayerListAdapter, dragDirs: Int, swipeDirs: Int) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
+            private val playerListAdapter = adapter
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                playerListAdapter.swapItems(viewHolder.adapterPosition,
+                    target.adapterPosition)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                // nope
+            }
+
+            // to disable swiping
+            override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                if (viewHolder is PlayerListAdapter.ViewHolder) return 0
+                return super.getSwipeDirs(recyclerView, viewHolder)
+            }
+        }
+
+        inner class CustomEditTextListener(var viewHolder: RecyclerView.ViewHolder? = null) : TextWatcher {
+            //var position: Int = 0
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // nope
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mPlayers[viewHolder!!.adapterPosition].name = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // nope
+            }
+        }
     }
 }

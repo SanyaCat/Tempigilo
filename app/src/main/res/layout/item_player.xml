@@ -14,17 +14,16 @@
         android:textSize="24sp"
         android:maxLength="12"
         android:hint="@string/name"
-        tools:text="Name"
+        tools:text="Red"
         android:inputType="text"
         android:autofillHints="@string/name" />
 
     <ImageView
         android:id="@+id/img_player_color"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="8dp"
-        android:padding="8dp"
-        tools:foreground="@color/red"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="14dp"
+        tools:foreground="#FF0000"
         android:contentDescription="@string/color" />
 
     <ImageButton

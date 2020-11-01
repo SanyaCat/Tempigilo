@@ -27,11 +27,11 @@ class MainActivity : AppCompatActivity() {
         var startTime = 0L
     }
 
-    var countDownTimer: CountDownTimer? = null
-    var isRunning = false
+    private var countDownTimer: CountDownTimer? = null
+    private var isRunning = false
     var currentPlayer = 0
     var losers = mutableSetOf<Int>()
-    lateinit var mediaPlayer: MediaPlayer
+    private lateinit var mediaPlayer: MediaPlayer
 
     fun playSound() {
         mediaPlayer.start()
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= 26) {
             vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
+            @Suppress("DEPRECATION")
             vibrator.vibrate(500)
         }
     }
@@ -65,10 +66,7 @@ class MainActivity : AppCompatActivity() {
         btn_pause.setOnClickListener {
             if (isRunning) {
                 pauseTimer()
-                // Toast.makeText(this, "paused", Toast.LENGTH_SHORT).show()
             } else {
-                //val time = txtvTime.text.toString()
-                //timeMillis = 30000L //one minute
                 startTimer(players[currentPlayer].time)
             }
         }
