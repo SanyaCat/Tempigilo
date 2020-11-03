@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="next_player">Следующий игрок</string>
+    <string name="pause_timer">Пауза</string>
+    <string name="player_name">Имя</string>
+    <string name="player_color">Цвет игрока</string>
+    <string name="remove_player">Убрать игрока</string>
+    <string name="new_game">Новая игра</string>
+    <string name="add_player">Добавить игрока</string>
+    <string name="choose_time">Выберите время (в секундах)</string>
+    <string name="red">Красный</string>
+    <string name="blue">Синий</string>
+    <string name="green">Зеленый</string>
+    <string name="yellow">Желтый</string>
+    <string name="cyan">Бирюзовый</string>
+    <string name="magenta">Фиолетовый</string>
+    <string name="wins">побеждает!</string>
+    <string name="loses">проигрывает!</string>
+    <string name="minimum_players">Достигнут минимум игроков!</string>
+    <string name="maximum_players">Достигнут максимум игроков!</string>
+</resources>

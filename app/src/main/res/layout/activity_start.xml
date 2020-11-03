@@ -16,6 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_player"/>
 
+    <!--
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_player"
         android:layout_width="wrap_content"
@@ -37,6 +38,7 @@
         android:tint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/fab_add_player" />
+    -->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

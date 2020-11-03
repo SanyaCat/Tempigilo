@@ -3,9 +3,7 @@ package by.radiant_ronin.tempigilo
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -14,8 +12,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.item_player.view.*
+
 
 class StartActivity : AppCompatActivity() {
 
@@ -24,8 +22,8 @@ class StartActivity : AppCompatActivity() {
     }
 
     private lateinit var rvPlayers: RecyclerView
-    private lateinit var fabAddPlayer: FloatingActionButton
-    private lateinit var fabBegin: FloatingActionButton
+//    private lateinit var fabAddPlayer: FloatingActionButton
+//    private lateinit var fabBegin: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,26 +31,26 @@ class StartActivity : AppCompatActivity() {
 
         context = this
 
-        val player1 = Player(MainActivity.startTime, MainActivity.colors[0], "Red")
-        val player2 = Player(MainActivity.startTime, MainActivity.colors[1], "Blue")
-        val player3 = Player(MainActivity.startTime, MainActivity.colors[2], "Green")
-        val player4 = Player(MainActivity.startTime, MainActivity.colors[3], "Yellow")
+        val player1 = Player(MainActivity.startTime, MainActivity.colors[0], getString(R.string.red))
+        val player2 = Player(MainActivity.startTime, MainActivity.colors[1], getString(R.string.blue))
+        val player3 = Player(MainActivity.startTime, MainActivity.colors[2], getString(R.string.green))
+        val player4 = Player(MainActivity.startTime, MainActivity.colors[3], getString(R.string.yellow))
         MainActivity.players = arrayListOf(player1, player2, player3, player4)
         MainActivity.reservedColors = mutableSetOf(MainActivity.colors[0], MainActivity.colors[1],
             MainActivity.colors[2], MainActivity.colors[3])
 
         rvPlayers = findViewById(R.id.rv_players)
-        fabAddPlayer = findViewById(R.id.fab_add_player)
-        fabBegin = findViewById(R.id.fab_begin)
+//        fabAddPlayer = findViewById(R.id.fab_add_player)
+//        fabBegin = findViewById(R.id.fab_begin)
 
-        fabAddPlayer.setOnClickListener {
-            addPlayer()
-        }
-        fabBegin.setOnClickListener {
-            val chooseTimeDialogFragment = ChooseTimeDialogFragment()
-            val manager = supportFragmentManager
-            chooseTimeDialogFragment.show(manager, "chooseTimeDialog")
-        }
+//        fabAddPlayer.setOnClickListener {
+//            addPlayer()
+//        }
+//        fabBegin.setOnClickListener {
+//            val chooseTimeDialogFragment = ChooseTimeDialogFragment()
+//            val manager = supportFragmentManager
+//            chooseTimeDialogFragment.show(manager, "chooseTimeDialog")
+//        }
 
         val adapter = PlayerListAdapter(MainActivity.players)
         adapter.setOnItemClickListener {
@@ -74,6 +72,28 @@ class StartActivity : AppCompatActivity() {
         helper.attachToRecyclerView(rvPlayers)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_item_add_player -> {
+                addPlayer()
+                true
+            }
+            R.id.menu_item_new_game -> {
+                val chooseTimeDialogFragment = ChooseTimeDialogFragment()
+                val manager = supportFragmentManager
+                chooseTimeDialogFragment.show(manager, "chooseTimeDialog")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -89,7 +109,7 @@ class StartActivity : AppCompatActivity() {
     private fun addPlayer() {
         if (MainActivity.players.size == 6) {
             // if Maximum players
-            Toast.makeText(this, "Maximum players reached!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.maximum_players), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -102,12 +122,12 @@ class StartActivity : AppCompatActivity() {
             }
         }
         val name = when (color) {
-            MainActivity.colors[0] -> "Red"
-            MainActivity.colors[1] -> "Blue"
-            MainActivity.colors[2] -> "Green"
-            MainActivity.colors[3] -> "Yellow"
-            MainActivity.colors[4] -> "Cyan"
-            MainActivity.colors[5] -> "Magenta"
+            MainActivity.colors[0] -> getString(R.string.red)
+            MainActivity.colors[1] -> getString(R.string.blue)
+            MainActivity.colors[2] -> getString(R.string.green)
+            MainActivity.colors[3] -> getString(R.string.yellow)
+            MainActivity.colors[4] -> getString(R.string.cyan)
+            MainActivity.colors[5] -> getString(R.string.magenta)
             else -> "Gray"
         }
         val position = MainActivity.players.size
@@ -120,7 +140,7 @@ class StartActivity : AppCompatActivity() {
 
     private fun removePlayer(player: Player) {
         if (MainActivity.players.size <= 2) {
-            Toast.makeText(this, "Minimum players reached!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.minimum_players), Toast.LENGTH_SHORT).show()
             return
         }
 

@@ -11,7 +11,7 @@ class ChooseTimeDialogFragment : DialogFragment() {
 
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            builder.setTitle("Choose time (seconds)")
+            builder.setTitle(R.string.choose_time)
                 .setItems(catNames) { _, which ->
                     MainActivity.startTime = catNames[which].toLong() * 1000
 

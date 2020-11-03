@@ -1,10 +1,22 @@
 <resources>
-    <string name="app_name">Tempigilo</string>
-    <string name="time_default">30:00</string>
-    <string name="tap">TAP</string>
+    <string name="app_name" translatable="false">Tempigilo</string>
+    <string name="time_default" translatable="false">30:00</string>
     <string name="next_player">Next Player</string>
     <string name="pause_timer">Pause Timer</string>
-    <string name="name">Name</string>
-    <string name="color">Color</string>
-    <string name="remove">Remove</string>
+    <string name="player_name">Name</string>
+    <string name="player_color">Player Color</string>
+    <string name="add_player">Add Player</string>
+    <string name="remove_player">Remove Player</string>
+    <string name="new_game">New Game</string>
+    <string name="choose_time">Choose time (seconds)</string>
+    <string name="minimum_players">Minimum players reached!</string>
+    <string name="maximum_players">Maximum players reached!</string>
+    <string name="wins">wins!</string>
+    <string name="loses">loses!</string>
+    <string name="red">Red</string>
+    <string name="blue">Blue</string>
+    <string name="green">Green</string>
+    <string name="yellow">Yellow</string>
+    <string name="cyan">Cyan</string>
+    <string name="magenta">Magenta</string>
 </resources>

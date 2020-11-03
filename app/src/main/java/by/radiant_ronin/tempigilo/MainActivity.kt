@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     private fun pauseTimer() {
         countDownTimer!!.cancel()
         isRunning = false
-        btn_pause.setImageResource(android.R.drawable.ic_media_play)
+        btn_pause.setImageResource(R.drawable.ic_start)
     }
 
     private fun startTimer(timeSeconds: Long) {
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                     playSound()
                     Toast.makeText(
                         this@MainActivity,
-                        "Player ${players[currentPlayer].name} loses!",
+                        "${players[currentPlayer].name} ${getString(R.string.loses)}",
                         Toast.LENGTH_SHORT
                     ).show()
                     losers.add(currentPlayer)
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                     playSound()
                     Toast.makeText(
                         this@MainActivity,
-                        "Player ${players[currentPlayer].name} wins!",
+                        "${players[currentPlayer].name} ${getString(R.string.wins)}",
                         Toast.LENGTH_LONG
                     ).show()
                     updateColor()
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
 
         countDownTimer!!.start()
         isRunning = true
-        btn_pause.setImageResource(android.R.drawable.ic_media_pause)
+        btn_pause.setImageResource(R.drawable.ic_pause)
     }
 
     @SuppressLint("SetTextI18n")

@@ -13,6 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/time_default"
+        android:textAlignment="center"
+        android:textColor="#000000"
         android:textSize="96sp"
         app:layout_constraintBottom_toTopOf="@id/btn_next_player"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,10 +23,10 @@
 
     <ImageButton
         android:id="@+id/btn_next_player"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:background="#00FFFFFF"
-        android:src="@android:drawable/ic_media_next"
+        android:src="@drawable/ic_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_pause"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,14 +35,14 @@
 
     <ImageButton
         android:id="@+id/btn_pause"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:background="#00FFFFFF"
-        android:src="@android:drawable/ic_media_play"
+        android:contentDescription="@string/pause_timer"
+        android:src="@drawable/ic_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_next_player"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/pause_timer" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

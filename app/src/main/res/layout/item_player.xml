@@ -13,10 +13,10 @@
         android:layout_margin="8dp"
         android:textSize="24sp"
         android:maxLength="12"
-        android:hint="@string/name"
+        android:hint="@string/player_name"
         tools:text="Red"
         android:inputType="text"
-        android:autofillHints="@string/name" />
+        android:autofillHints="@string/player_name" />
 
     <ImageView
         android:id="@+id/img_player_color"
@@ -24,14 +24,14 @@
         android:layout_height="36dp"
         android:layout_margin="14dp"
         tools:foreground="#FF0000"
-        android:contentDescription="@string/color" />
+        android:contentDescription="@string/player_color" />
 
     <ImageButton
         android:id="@+id/btn_player_remove"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="8dp"
-        android:src="@android:drawable/ic_menu_delete"
-        android:contentDescription="@string/remove" />
+        android:contentDescription="@string/remove_player"
+        android:src="@drawable/ic_delete" />
 
 </LinearLayout>
